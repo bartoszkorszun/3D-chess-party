@@ -19,7 +19,6 @@ D:\Workspace\ComputerGraphics\3D-chess-party\rook.h(12551,1): warning C4305: 'in
 D:\Workspace\ComputerGraphics\3D-chess-party\rook.h(18826,1): warning C4305: 'initializing': truncation from 'double' to 'float'
 D:\Workspace\ComputerGraphics\3D-chess-party\field.h(52,1): warning C4305: 'initializing': truncation from 'double' to 'float'
 D:\Workspace\ComputerGraphics\3D-chess-party\main_file.cpp(42,31): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
-D:\Workspace\ComputerGraphics\3D-chess-party\main_file.cpp(159,22): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-D:\Workspace\ComputerGraphics\3D-chess-party\main_file.cpp(160,22): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-glew32s.lib(glew.obj) : warning LNK4099: PDB '' was not found with 'glew32s.lib(glew.obj)' or at ''; linking object as if no debug info
+D:\Workspace\ComputerGraphics\3D-chess-party\main_file.cpp(174,22): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+D:\Workspace\ComputerGraphics\3D-chess-party\main_file.cpp(175,22): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
   3D-chess-party.vcxproj -> D:\Workspace\ComputerGraphics\3D-chess-party\x64\Debug\3D-chess-party.exe

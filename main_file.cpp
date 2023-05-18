@@ -57,7 +57,6 @@ void freeOpenGLProgram(GLFWwindow* window) {
 
 void drawBoard(glm::mat4 M) {
 
-	M = glm::translate(M, glm::vec3(-4.5f, 0.0f, -3.5f));
 	glm::mat4 M1 = M;
 
 	for (int i = 0; i < 8; i++) {
@@ -86,12 +85,23 @@ void drawBoard(glm::mat4 M) {
 			glEnableVertexAttribArray(sp->a("vertex"));  //W³¹cz przesy³anie danych do atrybutu vertex
 			glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, fieldVerts); //Wska¿ tablicê z danymi dla atrybutu vertex
 
+			glEnableVertexAttribArray(sp->a("normals"));
+			glVertexAttribPointer(sp->a("normals"), 4, GL_FLOAT, false, 0, fieldNormals);
+
+			glEnableVertexAttribArray(sp->a("texCoord0"));
+			glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, fieldTexCoords);
+
 			glDrawArrays(GL_TRIANGLES, 0, fieldNumVerts); //Narysuj obiekt
 		}
 		if (i < 7) {
 			M1 = glm::translate(M1, glm::vec3(-8.0f, 0.0f, 1.0f));
 		}
 	}
+}
+
+void drawPieces(glm::mat4 M) {
+
+
 }
 
 void drawScene(GLFWwindow* window) {
@@ -112,6 +122,7 @@ void drawScene(GLFWwindow* window) {
 	M = glm::rotate(M, angle_y, glm::vec3(1.0f, 0.0f, 0.0f));
 	M = glm::rotate(M, angle_x, glm::vec3(0.0f, 1.0f, 0.0f));
 	M = glm::scale(M, glm::vec3(0.3f, 0.3f, 0.3f));
+	M = glm::translate(M, glm::vec3(-4.5f, -3.0f, -3.5f));
 
 	drawBoard(M);
 
@@ -119,8 +130,12 @@ void drawScene(GLFWwindow* window) {
 	//Przeslij parametry programu cieniuj¹cego do karty graficznej
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
+	glUniform4f(sp->u("lp1"), 3, 5, 0, 1);
+	glUniform4f(sp->u("lp2"), -3, 5, 0, 1);
 
 	glDisableVertexAttribArray(sp->a("vertex"));  //Wy³¹cz przesy³anie danych do atrybutu vertex
+	glDisableVertexAttribArray(sp->a("normals"));
+	glDisableVertexAttribArray(sp->a("texCoord0"));
 
 	glfwSwapBuffers(window);
 }

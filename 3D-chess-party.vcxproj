@@ -25,6 +25,7 @@
     <ClInclude Include="field.h" />
     <ClInclude Include="king.h" />
     <ClInclude Include="knight.h" />
+    <ClInclude Include="lodepng.h" />
     <ClInclude Include="pawn.h" />
     <ClInclude Include="queen.h" />
     <ClInclude Include="rook.h" />
