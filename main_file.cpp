@@ -10,6 +10,7 @@
 #include <shaderprogram.h>
 #include <constants.h>
 #include <allmodels.h>
+#include <lodepng.h>
 
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);

@@ -32,6 +32,7 @@
     <ClInclude Include="shaderprogram.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main_file.cpp" />
     <ClCompile Include="shaderprogram.cpp" />
   </ItemGroup>
