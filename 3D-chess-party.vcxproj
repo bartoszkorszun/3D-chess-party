@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="allmodels.h" />
     <ClInclude Include="bishop.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="field.h" />

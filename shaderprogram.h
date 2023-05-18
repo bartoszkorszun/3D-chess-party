@@ -20,4 +20,6 @@ public:
 	GLuint a(const char* variableName); //Pobiera numer slotu zwi¹zanego z danym atrybutem
 };
 
+extern ShaderProgram* sp;
+
 #endif
