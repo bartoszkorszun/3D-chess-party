@@ -1,0 +1,13 @@
+﻿main_file.obj : error LNK2019: unresolved external symbol __imp__glewInit@0 referenced in function _main
+main_file.obj : error LNK2019: unresolved external symbol _glfwInit referenced in function _main
+main_file.obj : error LNK2019: unresolved external symbol _glfwTerminate referenced in function _main
+main_file.obj : error LNK2019: unresolved external symbol _glfwSetErrorCallback referenced in function _main
+main_file.obj : error LNK2019: unresolved external symbol _glfwCreateWindow referenced in function _main
+main_file.obj : error LNK2019: unresolved external symbol _glfwDestroyWindow referenced in function _main
+main_file.obj : error LNK2019: unresolved external symbol _glfwWindowShouldClose referenced in function _main
+main_file.obj : error LNK2019: unresolved external symbol _glfwMakeContextCurrent referenced in function _main
+main_file.obj : error LNK2019: unresolved external symbol _glfwSwapBuffers referenced in function "void __cdecl drawScene(struct GLFWwindow *)" (?drawScene@@YAXPAUGLFWwindow@@@Z)
+main_file.obj : error LNK2019: unresolved external symbol _glfwSwapInterval referenced in function _main
+glew\lib\x64\glew32s.lib : warning LNK4272: library machine type 'x64' conflicts with target machine type 'x86'
+glfw\lib\x64\glfw3.lib : warning LNK4272: library machine type 'x64' conflicts with target machine type 'x86'
+D:\Workspace\ComputerGraphics\3D-chess-party\Debug\3D-chess-party.exe : fatal error LNK1120: 10 unresolved externals
