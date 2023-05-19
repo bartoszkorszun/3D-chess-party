@@ -19,17 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="allmodels.h" />
     <ClInclude Include="bishop.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="king.h" />
     <ClInclude Include="knight.h" />
+    <ClInclude Include="lodepng.h" />
     <ClInclude Include="pawn.h" />
     <ClInclude Include="queen.h" />
     <ClInclude Include="rook.h" />
     <ClInclude Include="shaderprogram.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main_file.cpp" />
     <ClCompile Include="shaderprogram.cpp" />
   </ItemGroup>

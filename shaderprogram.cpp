@@ -1,5 +1,7 @@
 #include "shaderprogram.h"
 
+ShaderProgram* sp;
+
 //Procedura wczytuje plik do tablicy znaków.
 char* ShaderProgram::readFile(const char* fileName) {
 	int filesize;
