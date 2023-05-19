@@ -25,6 +25,7 @@
     <ClInclude Include="drawboard.h" />
     <ClInclude Include="drawpieces.h" />
     <ClInclude Include="field.h" />
+    <ClInclude Include="initpositions.h" />
     <ClInclude Include="king.h" />
     <ClInclude Include="knight.h" />
     <ClInclude Include="lodepng.h" />

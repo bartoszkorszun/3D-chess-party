@@ -46,15 +46,11 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetKeyCallback(window, keyCallback);
 
 	sp = new ShaderProgram("v_simplest.glsl", NULL, "f_simplest.glsl");
-
-	printf("init\n");
 }
 
 void freeOpenGLProgram(GLFWwindow* window) {
 
 	delete sp;
-
-	printf("free");
 }
 
 void drawScene(GLFWwindow* window) {
@@ -78,8 +74,6 @@ void drawScene(GLFWwindow* window) {
 	M = glm::translate(M, glm::vec3(-4.5f, -3.0f, -3.5f));
 
 	db->drawBoard(M);
-
-	M = glm::translate(M, glm::vec3(1.0f, 0.2f, 0.0));
 
 	dp->drawPieces(M);
 
