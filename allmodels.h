@@ -4,4 +4,3 @@
 #include <pawn.h>
 #include <queen.h>
 #include <rook.h>
-#include <field.h>

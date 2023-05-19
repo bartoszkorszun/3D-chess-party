@@ -9,8 +9,9 @@
 #include <stdio.h>
 #include <shaderprogram.h>
 #include <constants.h>
-#include <allmodels.h>
 #include <lodepng.h>
+#include <drawpieces.h>
+#include <drawboard.h>
 
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
@@ -56,55 +57,6 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	printf("free");
 }
 
-void drawBoard(glm::mat4 M) {
-
-	glm::mat4 M1 = M;
-
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			M1 = glm::translate(M1, glm::vec3(1.0f, 0.0f, 0.0f));
-
-			if (i % 2 == 0) {
-				if (j % 2 == 0) {
-					glUniform4f(sp->u("color"), 0, 0, 0, 1);
-				}
-				else {
-					glUniform4f(sp->u("color"), 1, 1, 1, 1);
-				}
-			}
-			else {
-				if (j % 2 == 0) {
-					glUniform4f(sp->u("color"), 1, 1, 1, 1);
-				}
-				else {
-					glUniform4f(sp->u("color"), 0, 0, 0, 1);
-				}
-			}
-		
-			glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M1));
-
-			glEnableVertexAttribArray(sp->a("vertex"));  //W³¹cz przesy³anie danych do atrybutu vertex
-			glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, fieldVerts); //Wska¿ tablicê z danymi dla atrybutu vertex
-
-			glEnableVertexAttribArray(sp->a("normals"));
-			glVertexAttribPointer(sp->a("normals"), 4, GL_FLOAT, false, 0, fieldNormals);
-
-			glEnableVertexAttribArray(sp->a("texCoord0"));
-			glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, fieldTexCoords);
-
-			glDrawArrays(GL_TRIANGLES, 0, fieldNumVerts); //Narysuj obiekt
-		}
-		if (i < 7) {
-			M1 = glm::translate(M1, glm::vec3(-8.0f, 0.0f, 1.0f));
-		}
-	}
-}
-
-void drawPieces(glm::mat4 M) {
-
-
-}
-
 void drawScene(GLFWwindow* window) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -125,7 +77,11 @@ void drawScene(GLFWwindow* window) {
 	M = glm::scale(M, glm::vec3(0.3f, 0.3f, 0.3f));
 	M = glm::translate(M, glm::vec3(-4.5f, -3.0f, -3.5f));
 
-	drawBoard(M);
+	db->drawBoard(M);
+
+	M = glm::translate(M, glm::vec3(1.0f, 0.2f, 0.0));
+
+	dp->drawPieces(M);
 
 	sp->use();//Aktywacja programu cieniuj¹cego
 	//Przeslij parametry programu cieniuj¹cego do karty graficznej
@@ -152,7 +108,7 @@ int main(void) {
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(1400, 700, "OpenGL", NULL, NULL);
+	window = glfwCreateWindow(800, 800, "OpenGL", NULL, NULL);
 
 	if (!window)
 	{

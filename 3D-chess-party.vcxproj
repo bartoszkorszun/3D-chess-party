@@ -22,6 +22,8 @@
     <ClInclude Include="allmodels.h" />
     <ClInclude Include="bishop.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="drawboard.h" />
+    <ClInclude Include="drawpieces.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="king.h" />
     <ClInclude Include="knight.h" />
@@ -32,6 +34,8 @@
     <ClInclude Include="shaderprogram.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="drawboard.cpp" />
+    <ClCompile Include="drawpieces.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main_file.cpp" />
     <ClCompile Include="shaderprogram.cpp" />
