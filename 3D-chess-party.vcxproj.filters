@@ -83,9 +83,4 @@
       <Filter>Pliki zasobów</Filter>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="party.txt">
-      <Filter>Pliki zasobów</Filter>
-    </Text>
-  </ItemGroup>
 </Project>

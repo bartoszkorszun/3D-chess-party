@@ -46,7 +46,6 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetKeyCallback(window, keyCallback);
 
 	sp = new ShaderProgram("v_simplest.glsl", NULL, "f_simplest.glsl");
-	dp->readFile("party.txt");
 }
 
 void freeOpenGLProgram(GLFWwindow* window) {
@@ -125,7 +124,6 @@ int main(void) {
 	while (!glfwWindowShouldClose(window)) {
 		angle_x += speed_x * glfwGetTime();
 		angle_y += speed_y * glfwGetTime();
-		dp->movePieces();
 		glfwSetTime(0);
 		drawScene(window);
 		glfwPollEvents();
