@@ -45,6 +45,9 @@
     <None Include="f_simplest.glsl" />
     <None Include="v_simplest.glsl" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="party.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
