@@ -173,7 +173,7 @@ void movePiece(string moveToPosition, float &x, float &y, float &z) {
 
 	nextPosition(moveToPosition);
 
-
+	// TODO
 }
 
 void DrawPieces::movePieces() {
