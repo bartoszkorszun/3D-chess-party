@@ -14,9 +14,6 @@
 #include <string>
 #include <sstream>
 
-#include <chrono>
-#include <thread>
-
 using namespace std;
 
 DrawPieces* dp;
@@ -178,7 +175,7 @@ void movePiece(string moveToPosition, float &x, float &y, float &z) {
 
 void DrawPieces::movePieces() {
 	
-	if (moves[nextMove][0] == "castle") { castle = true; }
+	if (moves[nextMove][0] == "castle") { castle = true; nextMove++; }
 	
 	if (castle) {
 		
