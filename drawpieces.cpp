@@ -80,6 +80,7 @@ void DrawPieces::readFile(string filename) {
 int nextMove = 0;
 bool isFinished = false;
 bool castle = false;
+bool isOnTop = false;
 
 float fNextPosition[2];
 
@@ -170,7 +171,24 @@ void movePiece(string moveToPosition, float &x, float &y, float &z) {
 
 	nextPosition(moveToPosition);
 
-	// TODO
+	float xDestination = fNextPosition[0];
+	float zDestination = fNextPosition[1];
+	
+	cout << y << endl;
+
+	if (y <= 2.0f && !isOnTop) {
+		if (y == 2.0f) { isOnTop = true; }
+		if (y < 2.0f) { y += 0.05f; }
+	}
+	if (isOnTop && z != zDestination) {
+		if (z <= zDestination) { z += 0.05f; }
+		if (z >= zDestination) { z -= 0.05f; }
+	}
+	if (isOnTop && z == zDestination && x != xDestination) {
+		if (x <= xDestination) { x += 0.05f; }
+		if (x >= xDestination) { x -= 0.05f; }
+	}
+	if (isOnTop && z == zDestination && x == xDestination) { nextMove++; }
 }
 
 void DrawPieces::movePieces() {
