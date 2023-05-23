@@ -13,6 +13,8 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cmath>
+#include <thread>
 
 using namespace std;
 
@@ -78,11 +80,11 @@ void DrawPieces::readFile(string filename) {
 }
 
 int nextMove = 0;
-bool isFinished = false;
 bool castle = false;
 bool isOnTop = false;
 
 float fNextPosition[2];
+const float movementSpeed = 0.05f;
 
 void nextPosition(string sNextPosition) {
 	
@@ -167,36 +169,101 @@ void nextPosition(string sNextPosition) {
 	if (sNextPosition == "h8") { fNextPosition[0] = h8[0]; fNextPosition[1] = h8[1]; }
 }
 
+bool isEqual(float a, float b, float epsilon = 0.001f) {
+	return abs(a - b) < epsilon;
+}
+
 void movePiece(string moveToPosition, float &x, float &y, float &z) {
 
 	nextPosition(moveToPosition);
 
 	float xDestination = fNextPosition[0];
 	float zDestination = fNextPosition[1];
-	
-	cout << y << endl;
+	float epsilon = 0.001f;
 
-	if (y <= 2.0f && !isOnTop) {
-		if (y == 2.0f) { isOnTop = true; }
-		if (y < 2.0f) { y += 0.05f; }
+	if (!isEqual(y, 2.0f) && !isOnTop) {
+		if (y < 2.0f + epsilon) { y += movementSpeed; }
+		if (isEqual(y, 2.0f)) { isOnTop = true; }
 	}
-	if (isOnTop && z != zDestination) {
-		if (z <= zDestination) { z += 0.05f; }
-		if (z >= zDestination) { z -= 0.05f; }
+	if (isOnTop && !isEqual(z, zDestination)) {
+		if (z <= zDestination + epsilon) { z += movementSpeed; }
+		else if (z >= zDestination - epsilon) { z -= movementSpeed; }
 	}
-	if (isOnTop && z == zDestination && x != xDestination) {
-		if (x <= xDestination) { x += 0.05f; }
-		if (x >= xDestination) { x -= 0.05f; }
+	if (isOnTop && isEqual(z, zDestination) && !isEqual(x, xDestination)) {
+		if (x <= xDestination + epsilon) { x += movementSpeed; }
+		else if (x >= xDestination - epsilon) { x -= movementSpeed; }
 	}
-	if (isOnTop && z == zDestination && x == xDestination) { nextMove++; }
+	if (isOnTop && isEqual(z, zDestination) && isEqual(x, xDestination)) {
+		if (!isEqual(y, 0.2f)) { y -= movementSpeed; }
+	}
+	if (isOnTop && isEqual(z, zDestination) && isEqual(x, xDestination) && isEqual(y, 0.2f)) { nextMove++; isOnTop = false; }
+}
+
+bool isKingOnTop = false;
+bool isRookOnTop = false;
+
+void performCastle(string moveKingToPosition, string moveRookToPosition, float& kx, float& ky, float& kz, float& rx, float& ry, float& rz) {
+
+	float epsilon = 0.001f;
+
+	nextPosition(moveKingToPosition);
+	float kxDestination = fNextPosition[0];
+	float kzDestination = fNextPosition[1];
+
+	if (!isEqual(ky, 2.0f) && !isKingOnTop) {
+		if (ky < 2.0f + epsilon) { ky += movementSpeed; }
+		if (isEqual(ky, 2.0f)) { isKingOnTop = true; }
+	}
+	if (isKingOnTop && !isEqual(kz, kzDestination)) {
+		if (kz <= kzDestination + epsilon) { kz += movementSpeed; }
+		else if (kz >= kzDestination - epsilon) { kz -= movementSpeed; }
+	}
+	if (isKingOnTop && isEqual(kz, kzDestination) && !isEqual(kx, kxDestination)) {
+		if (kx <= kxDestination + epsilon) { kx += movementSpeed; }
+		else if (kx >= kxDestination - epsilon) { kx -= movementSpeed; }
+	}
+	if (isKingOnTop && isEqual(kz, kzDestination) && isEqual(kx, kxDestination)) {
+		if (!isEqual(ky, 0.2f)) { ky -= movementSpeed; }
+	}
+
+	nextPosition(moveRookToPosition);
+	float rxDestination = fNextPosition[0];
+	float rzDestination = fNextPosition[1];
+
+	if (!isEqual(ry, 2.0f) && !isRookOnTop) {
+		if (ry < 2.0f + epsilon) { ry += movementSpeed; }
+		if (isEqual(ry, 2.0f)) { isRookOnTop = true; }
+	}
+	if (isRookOnTop && !isEqual(rz, rzDestination)) {
+		if (rz <= rzDestination + epsilon) { rz += movementSpeed; }
+		else if (rz >= rzDestination - epsilon) { rz -= movementSpeed; }
+	}
+	if (isRookOnTop && isEqual(rz, rzDestination) && !isEqual(rx, rxDestination)) {
+		if (rx <= rxDestination + epsilon) { rx += movementSpeed; }
+		else if (rx >= kxDestination - epsilon) { rx -= movementSpeed; }
+	}
+	if (isRookOnTop && isEqual(rz, rzDestination) && isEqual(rx, rxDestination)) {
+		if (!isEqual(ry, 0.2f)) { ry -= movementSpeed; }
+	}
+
+	if (isKingOnTop && isRookOnTop 
+		&& isEqual(kz, kzDestination) && isEqual(kx, kxDestination) && isEqual(ky, 0.2f)
+		&& isEqual(rz, rzDestination) && isEqual(rx, rxDestination) && isEqual(ry, 0.2f)) {
+
+		nextMove += 2;
+		isKingOnTop = false; 
+		isRookOnTop = false;
+		castle = false;
+	}
 }
 
 void DrawPieces::movePieces() {
-	
+
 	if (moves[nextMove][0] == "castle") { castle = true; nextMove++; }
 	
 	if (castle) {
-		
+		// TODO ify
+		performCastle(moves[nextMove][1], moves[nextMove + 1][1], kingWX, kingWY, kingWZ, rookWRX, rookWRY, rookWRZ);
 	}
 	
 	if (!castle) {
@@ -244,11 +311,6 @@ void DrawPieces::movePieces() {
 		if (moves[nextMove][0] == "pb6") { movePiece(moves[nextMove][1], pawnB6X, pawnB6Y, pawnB6Z); }
 		if (moves[nextMove][0] == "pb7") { movePiece(moves[nextMove][1], pawnB7X, pawnB7Y, pawnB7Z); }
 		if (moves[nextMove][0] == "pb8") { movePiece(moves[nextMove][1], pawnB8X, pawnB8Y, pawnB8Z); }
-	}
-
-	if (isFinished) {
-		nextMove++;
-		isFinished = false;
 	}
 }
 

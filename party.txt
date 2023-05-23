@@ -21,8 +21,8 @@ qb g6
 kwr f4
 qb f6
 castle 0
-rwr f1
 kw g1
+rwr f1
 kbr f3
 qw f3
 bbr d7
