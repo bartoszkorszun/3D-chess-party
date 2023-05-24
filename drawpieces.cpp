@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <shaderprogram.h>
-#include <drawpieces.h>
 #include <allmodels.h>
 #include <initpositions.h>
 #include <iostream>
@@ -16,40 +15,37 @@
 #include <cmath>
 #include <thread>
 
+#include <drawpieces.h>
+
 using namespace std;
 
 DrawPieces* dp;
 
-void drawPiece(glm::mat4 M,float x, float y, float z, bool isWhite, 
-	float verts[], float normals[], float texCoords[], unsigned int numVerts) {
+string moves[107][2];
 
-	glm::mat4 M1 = M;
-	M1 = glm::translate(M, glm::vec3(x, y, z));
+int nextMove = 0;
 
-	if (isWhite) {
-		M1 = glm::rotate(M1, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniform4f(sp->u("color"), 1, 1, 1, 1);
-	}
-	else {
-		M1 = glm::rotate(M1, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniform4f(sp->u("color"), 0, 0, 0, 1);
-	}
+bool castle = false;
+bool isOnTop = false;
+bool isKingOnTop = false;
+bool isRookOnTop = false;
 
-	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M1));
+float fNextPosition[2];
 
-	glEnableVertexAttribArray(sp->a("vertex"));  //W³¹cz przesy³anie danych do atrybutu vertex
-	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts); //Wska¿ tablicê z danymi dla atrybutu vertex
+const float movementSpeed = 0.05f;
 
-	glEnableVertexAttribArray(sp->a("normals"));
-	glVertexAttribPointer(sp->a("normals"), 4, GL_FLOAT, false, 0, normals);
-
-	glEnableVertexAttribArray(sp->a("texCoord0"));
-	glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, texCoords);
-
-	glDrawArrays(GL_TRIANGLES, 0, numVerts); //Narysuj obiekt
+bool isEqual(float a, float b, float epsilon = 0.001f) {
+	return abs(a - b) < epsilon;
 }
 
-string moves[107][2];
+bool isFieldOccupied(string position) {
+
+	for (int i = 0; i < 32; i++) {
+		if (position == currentPositions[i][0]) { return true; }
+	}
+
+	return false;
+}
 
 void DrawPieces::readFile(string filename) {
 
@@ -78,13 +74,6 @@ void DrawPieces::readFile(string filename) {
 		cout << "Failed to open the file." << endl;
 	}
 }
-
-int nextMove = 0;
-bool castle = false;
-bool isOnTop = false;
-
-float fNextPosition[2];
-const float movementSpeed = 0.05f;
 
 void nextPosition(string sNextPosition) {
 	
@@ -169,11 +158,76 @@ void nextPosition(string sNextPosition) {
 	if (sNextPosition == "h8") { fNextPosition[0] = h8[0]; fNextPosition[1] = h8[1]; }
 }
 
-bool isEqual(float a, float b, float epsilon = 0.001f) {
-	return abs(a - b) < epsilon;
+void assignPosition(string piece, string position) {
+
+	for (int i = 0; i < 32; i++) {
+		if (piece == currentPositions[i][1]) { currentPositions[i][0] = position; }
+	}
+	cout << ">>>assignPosition() | " << piece << " -> " << position << endl;
 }
 
-void movePiece(string moveToPosition, float &x, float &y, float &z) {
+string pieceToDestroy(string piece, string position) {
+
+	string result;
+
+	for (int i = 0; i < 32; i++) {
+		if (position == currentPositions[i][0]) {
+			result = currentPositions[i][1];
+			currentPositions[i][0] = "";
+			break;
+		}
+	}
+
+	cout << ">>>pieceToDestroy() | " << result << endl;
+
+	return result;
+}
+
+void destroyPiece(string piece) {
+
+	cout << ">>>destroyPiece()   | " << piece << endl;
+
+	if (piece == "rwl") { bRookWL = false; }
+	if (piece == "rwr") { bRookWR = false; }
+	if (piece == "rbl") { bRookBL = false; }
+	if (piece == "rbr") { bRookBR = false; }
+
+	if (piece == "kwl") { bKnightWL = false; }
+	if (piece == "kwr") { bKnightWR = false; }
+	if (piece == "kbl") { bKnightBL = false; }
+	if (piece == "kbr") { bKnightBR = false; }
+
+	if (piece == "bwl") { bBishopWL = false; }
+	if (piece == "bwr") { bBishopWR = false; }
+	if (piece == "bbl") { bBishopBL = false; }
+	if (piece == "bbr") { bBishopBR = false; }
+
+	if (piece == "qw") { bQueenW = false; }
+	if (piece == "qb") { bQueenB = false; }
+
+	if (piece == "kw") { bKingW = false; }
+	if (piece == "kb") { bKingB = false; }
+
+	if (piece == "pw1") { bPawnW1 = false; }
+	if (piece == "pw2") { bPawnW2 = false; }
+	if (piece == "pw3") { bPawnW3 = false; }
+	if (piece == "pw4") { bPawnW4 = false; }
+	if (piece == "pw5") { bPawnW5 = false; }
+	if (piece == "pw6") { bPawnW6 = false; }
+	if (piece == "pw7") { bPawnW7 = false; }
+	if (piece == "pw8") { bPawnW8 = false; }
+
+	if (piece == "pb1") { bPawnB1 = false; }
+	if (piece == "pb2") { bPawnB2 = false; }
+	if (piece == "pb3") { bPawnB3 = false; }
+	if (piece == "pb4") { bPawnB4 = false; }
+	if (piece == "pb5") { bPawnB5 = false; }
+	if (piece == "pb6") { bPawnB6 = false; }
+	if (piece == "pb7") { bPawnB7 = false; }
+	if (piece == "pb8") { bPawnB8 = false; }
+}
+
+void movePiece(string piece, string moveToPosition, float &x, float &y, float &z) {
 
 	nextPosition(moveToPosition);
 
@@ -195,12 +249,16 @@ void movePiece(string moveToPosition, float &x, float &y, float &z) {
 	}
 	if (isOnTop && isEqual(z, zDestination) && isEqual(x, xDestination)) {
 		if (!isEqual(y, 0.2f)) { y -= movementSpeed; }
+		if (y < 1.0f + epsilon) {
+			if (isFieldOccupied(moveToPosition)) { destroyPiece(pieceToDestroy(piece, moveToPosition)); }
+		}
 	}
-	if (isOnTop && isEqual(z, zDestination) && isEqual(x, xDestination) && isEqual(y, 0.2f)) { nextMove++; isOnTop = false; }
+	if (isOnTop && isEqual(z, zDestination) && isEqual(x, xDestination) && isEqual(y, 0.2f)) { 
+		assignPosition(piece, moveToPosition);
+		nextMove++; 
+		isOnTop = false; 
+	}
 }
-
-bool isKingOnTop = false;
-bool isRookOnTop = false;
 
 void performCastle(string moveKingToPosition, string moveRookToPosition, float& kx, float& ky, float& kz, float& rx, float& ry, float& rz) {
 
@@ -250,6 +308,8 @@ void performCastle(string moveKingToPosition, string moveRookToPosition, float& 
 		&& isEqual(kz, kzDestination) && isEqual(kx, kxDestination) && isEqual(ky, 0.2f)
 		&& isEqual(rz, rzDestination) && isEqual(rx, rxDestination) && isEqual(ry, 0.2f)) {
 
+		assignPosition("kw", moveKingToPosition);
+		assignPosition("rwr", moveRookToPosition);
 		nextMove += 2;
 		isKingOnTop = false; 
 		isRookOnTop = false;
@@ -268,98 +328,129 @@ void DrawPieces::movePieces() {
 	
 	if (!castle) {
 		// Rooks
-		if (moves[nextMove][0] == "rwl") { movePiece(moves[nextMove][1], rookWLX, rookWLY, rookWLZ); }
-		if (moves[nextMove][0] == "rwr") { movePiece(moves[nextMove][1], rookWRX, rookWRY, rookWRZ); }
-		if (moves[nextMove][0] == "rbl") { movePiece(moves[nextMove][1], rookBLX, rookBLY, rookBLZ); }
-		if (moves[nextMove][0] == "rbr") { movePiece(moves[nextMove][1], rookBRX, rookBRY, rookBRZ); }
+		if (moves[nextMove][0] == "rwl") { movePiece(moves[nextMove][0], moves[nextMove][1], rookWLX, rookWLY, rookWLZ); }
+		if (moves[nextMove][0] == "rwr") { movePiece(moves[nextMove][0], moves[nextMove][1], rookWRX, rookWRY, rookWRZ); }
+		if (moves[nextMove][0] == "rbl") { movePiece(moves[nextMove][0], moves[nextMove][1], rookBLX, rookBLY, rookBLZ); }
+		if (moves[nextMove][0] == "rbr") { movePiece(moves[nextMove][0], moves[nextMove][1], rookBRX, rookBRY, rookBRZ); }
 
 		// Knights
-		if (moves[nextMove][0] == "kwl") { movePiece(moves[nextMove][1], knightWLX, knightWLY, knightWLZ); }
-		if (moves[nextMove][0] == "kwr") { movePiece(moves[nextMove][1], knightWRX, knightWRY, knightWRZ); }
-		if (moves[nextMove][0] == "kbl") { movePiece(moves[nextMove][1], knightBLX, knightBLY, knightBLZ); }
-		if (moves[nextMove][0] == "kbr") { movePiece(moves[nextMove][1], knightBRX, knightBRY, knightBRZ); }
+		if (moves[nextMove][0] == "kwl") { movePiece(moves[nextMove][0], moves[nextMove][1], knightWLX, knightWLY, knightWLZ); }
+		if (moves[nextMove][0] == "kwr") { movePiece(moves[nextMove][0], moves[nextMove][1], knightWRX, knightWRY, knightWRZ); }
+		if (moves[nextMove][0] == "kbl") { movePiece(moves[nextMove][0], moves[nextMove][1], knightBLX, knightBLY, knightBLZ); }
+		if (moves[nextMove][0] == "kbr") { movePiece(moves[nextMove][0], moves[nextMove][1], knightBRX, knightBRY, knightBRZ); }
 
 		// Bishops
-		if (moves[nextMove][0] == "bwl") { movePiece(moves[nextMove][1], bishopWLX, bishopWLY, bishopWLZ); }
-		if (moves[nextMove][0] == "bwr") { movePiece(moves[nextMove][1], bishopWRX, bishopWRY, bishopWRZ); }
-		if (moves[nextMove][0] == "bbl") { movePiece(moves[nextMove][1], bishopBLX, bishopBLY, bishopBLZ); }
-		if (moves[nextMove][0] == "bbr") { movePiece(moves[nextMove][1], bishopBRX, bishopBRY, bishopBRZ); }
+		if (moves[nextMove][0] == "bwl") { movePiece(moves[nextMove][0], moves[nextMove][1], bishopWLX, bishopWLY, bishopWLZ); }
+		if (moves[nextMove][0] == "bwr") { movePiece(moves[nextMove][0], moves[nextMove][1], bishopWRX, bishopWRY, bishopWRZ); }
+		if (moves[nextMove][0] == "bbl") { movePiece(moves[nextMove][0], moves[nextMove][1], bishopBLX, bishopBLY, bishopBLZ); }
+		if (moves[nextMove][0] == "bbr") { movePiece(moves[nextMove][0], moves[nextMove][1], bishopBRX, bishopBRY, bishopBRZ); }
 
 		// Queens
-		if (moves[nextMove][0] == "qw") { movePiece(moves[nextMove][1], queenWX, queenWY, queenWZ); }
-		if (moves[nextMove][0] == "qb") { movePiece(moves[nextMove][1], queenBX, queenBY, queenBZ); }
+		if (moves[nextMove][0] == "qw") { movePiece(moves[nextMove][0], moves[nextMove][1], queenWX, queenWY, queenWZ); }
+		if (moves[nextMove][0] == "qb") { movePiece(moves[nextMove][0], moves[nextMove][1], queenBX, queenBY, queenBZ); }
 
 		// Kings
-		if (moves[nextMove][0] == "kw") { movePiece(moves[nextMove][1], kingWX, kingWY, kingWZ); }
-		if (moves[nextMove][0] == "kb") { movePiece(moves[nextMove][1], kingBX, kingBY, kingBZ); }
+		if (moves[nextMove][0] == "kw") { movePiece(moves[nextMove][0], moves[nextMove][1], kingWX, kingWY, kingWZ); }
+		if (moves[nextMove][0] == "kb") { movePiece(moves[nextMove][0], moves[nextMove][1], kingBX, kingBY, kingBZ); }
 
 		// Pawns
-		if (moves[nextMove][0] == "pw1") { movePiece(moves[nextMove][1], pawnW1X, pawnW1Y, pawnW1Z); }
-		if (moves[nextMove][0] == "pw2") { movePiece(moves[nextMove][1], pawnW2X, pawnW2Y, pawnW2Z); }
-		if (moves[nextMove][0] == "pw3") { movePiece(moves[nextMove][1], pawnW3X, pawnW3Y, pawnW3Z); }
-		if (moves[nextMove][0] == "pw4") { movePiece(moves[nextMove][1], pawnW4X, pawnW4Y, pawnW4Z); }
-		if (moves[nextMove][0] == "pw5") { movePiece(moves[nextMove][1], pawnW5X, pawnW5Y, pawnW5Z); }
-		if (moves[nextMove][0] == "pw6") { movePiece(moves[nextMove][1], pawnW6X, pawnW6Y, pawnW6Z); }
-		if (moves[nextMove][0] == "pw7") { movePiece(moves[nextMove][1], pawnW7X, pawnW7Y, pawnW7Z); }
-		if (moves[nextMove][0] == "pw8") { movePiece(moves[nextMove][1], pawnW8X, pawnW8Y, pawnW8Z); }
+		if (moves[nextMove][0] == "pw1") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnW1X, pawnW1Y, pawnW1Z); }
+		if (moves[nextMove][0] == "pw2") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnW2X, pawnW2Y, pawnW2Z); }
+		if (moves[nextMove][0] == "pw3") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnW3X, pawnW3Y, pawnW3Z); }
+		if (moves[nextMove][0] == "pw4") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnW4X, pawnW4Y, pawnW4Z); }
+		if (moves[nextMove][0] == "pw5") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnW5X, pawnW5Y, pawnW5Z); }
+		if (moves[nextMove][0] == "pw6") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnW6X, pawnW6Y, pawnW6Z); }
+		if (moves[nextMove][0] == "pw7") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnW7X, pawnW7Y, pawnW7Z); }
+		if (moves[nextMove][0] == "pw8") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnW8X, pawnW8Y, pawnW8Z); }
 
-		if (moves[nextMove][0] == "pb1") { movePiece(moves[nextMove][1], pawnB1X, pawnB1Y, pawnB1Z); }
-		if (moves[nextMove][0] == "pb2") { movePiece(moves[nextMove][1], pawnB2X, pawnB2Y, pawnB2Z); }
-		if (moves[nextMove][0] == "pb3") { movePiece(moves[nextMove][1], pawnB3X, pawnB3Y, pawnB3Z); }
-		if (moves[nextMove][0] == "pb4") { movePiece(moves[nextMove][1], pawnB4X, pawnB4Y, pawnB4Z); }
-		if (moves[nextMove][0] == "pb5") { movePiece(moves[nextMove][1], pawnB5X, pawnB5Y, pawnB5Z); }
-		if (moves[nextMove][0] == "pb6") { movePiece(moves[nextMove][1], pawnB6X, pawnB6Y, pawnB6Z); }
-		if (moves[nextMove][0] == "pb7") { movePiece(moves[nextMove][1], pawnB7X, pawnB7Y, pawnB7Z); }
-		if (moves[nextMove][0] == "pb8") { movePiece(moves[nextMove][1], pawnB8X, pawnB8Y, pawnB8Z); }
+		if (moves[nextMove][0] == "pb1") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnB1X, pawnB1Y, pawnB1Z); }
+		if (moves[nextMove][0] == "pb2") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnB2X, pawnB2Y, pawnB2Z); }
+		if (moves[nextMove][0] == "pb3") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnB3X, pawnB3Y, pawnB3Z); }
+		if (moves[nextMove][0] == "pb4") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnB4X, pawnB4Y, pawnB4Z); }
+		if (moves[nextMove][0] == "pb5") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnB5X, pawnB5Y, pawnB5Z); }
+		if (moves[nextMove][0] == "pb6") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnB6X, pawnB6Y, pawnB6Z); }
+		if (moves[nextMove][0] == "pb7") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnB7X, pawnB7Y, pawnB7Z); }
+		if (moves[nextMove][0] == "pb8") { movePiece(moves[nextMove][0], moves[nextMove][1], pawnB8X, pawnB8Y, pawnB8Z); }
+	}
+}
+
+void drawPiece(glm::mat4 M, float x, float y, float z, bool isWhite,
+	float verts[], float normals[], float texCoords[], unsigned int numVerts, bool isInGame) {
+
+	if (isInGame) {
+		glm::mat4 M1 = M;
+		M1 = glm::translate(M, glm::vec3(x, y, z));
+
+		if (isWhite) {
+			M1 = glm::rotate(M1, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniform4f(sp->u("color"), 1, 1, 1, 1);
+		}
+		else {
+			M1 = glm::rotate(M1, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniform4f(sp->u("color"), 0, 0, 0, 1);
+		}
+
+		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M1));
+
+		glEnableVertexAttribArray(sp->a("vertex"));  //W³¹cz przesy³anie danych do atrybutu vertex
+		glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts); //Wska¿ tablicê z danymi dla atrybutu vertex
+
+		glEnableVertexAttribArray(sp->a("normals"));
+		glVertexAttribPointer(sp->a("normals"), 4, GL_FLOAT, false, 0, normals);
+
+		glEnableVertexAttribArray(sp->a("texCoord0"));
+		glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, texCoords);
+
+		glDrawArrays(GL_TRIANGLES, 0, numVerts); //Narysuj obiekt
 	}
 }
 
 void DrawPieces::drawPieces(glm::mat4 M) { 
 
 	// Rooks
-	drawPiece(M, rookWLX, rookWLY, rookWLZ, true, rookVerts, rookNormals, rookTexCoords, rookNumVerts);
-	drawPiece(M, rookWRX, rookWRY, rookWRZ, true, rookVerts, rookNormals, rookTexCoords, rookNumVerts);
-	drawPiece(M, rookBLX, rookBLY, rookBLZ, false, rookVerts, rookNormals, rookTexCoords, rookNumVerts);
-	drawPiece(M, rookBRX, rookBRY, rookBRZ, false, rookVerts, rookNormals, rookTexCoords, rookNumVerts);
+	drawPiece(M, rookWLX, rookWLY, rookWLZ, true, rookVerts, rookNormals, rookTexCoords, rookNumVerts, bRookWL);
+	drawPiece(M, rookWRX, rookWRY, rookWRZ, true, rookVerts, rookNormals, rookTexCoords, rookNumVerts, bRookWR);
+	drawPiece(M, rookBLX, rookBLY, rookBLZ, false, rookVerts, rookNormals, rookTexCoords, rookNumVerts, bRookBL);
+	drawPiece(M, rookBRX, rookBRY, rookBRZ, false, rookVerts, rookNormals, rookTexCoords, rookNumVerts, bRookBR);
 
 	// Knights
-	drawPiece(M, knightWLX, knightWLY, knightWLZ, true, knightVerts, knightNormals, knightTexCoords, knightNumVerts);
-	drawPiece(M, knightWRX, knightWRY, knightWRZ, true, knightVerts, knightNormals, knightTexCoords, knightNumVerts);
-	drawPiece(M, knightBLX, knightBLY, knightBLZ, false, knightVerts, knightNormals, knightTexCoords, knightNumVerts);
-	drawPiece(M, knightBRX, knightBRY, knightBRZ, false, knightVerts, knightNormals, knightTexCoords, knightNumVerts);
+	drawPiece(M, knightWLX, knightWLY, knightWLZ, true, knightVerts, knightNormals, knightTexCoords, knightNumVerts, bKnightWL);
+	drawPiece(M, knightWRX, knightWRY, knightWRZ, true, knightVerts, knightNormals, knightTexCoords, knightNumVerts, bKnightWR);
+	drawPiece(M, knightBLX, knightBLY, knightBLZ, false, knightVerts, knightNormals, knightTexCoords, knightNumVerts, bKnightBL);
+	drawPiece(M, knightBRX, knightBRY, knightBRZ, false, knightVerts, knightNormals, knightTexCoords, knightNumVerts, bKnightBR);
 
 	// Bishops
-	drawPiece(M, bishopWLX, bishopWLY, bishopWLZ, true, bishopVerts, bishopNormals, bishopTexCoords, bishopNumVerts);
-	drawPiece(M, bishopWRX, bishopWRY, bishopWRZ, true, bishopVerts, bishopNormals, bishopTexCoords, bishopNumVerts);
-	drawPiece(M, bishopBLX, bishopBLY, bishopBLZ, false, bishopVerts, bishopNormals, bishopTexCoords, bishopNumVerts);
-	drawPiece(M, bishopBRX, bishopBRY, bishopBRZ, false, bishopVerts, bishopNormals, bishopTexCoords, bishopNumVerts);
+	drawPiece(M, bishopWLX, bishopWLY, bishopWLZ, true, bishopVerts, bishopNormals, bishopTexCoords, bishopNumVerts, bBishopWL);
+	drawPiece(M, bishopWRX, bishopWRY, bishopWRZ, true, bishopVerts, bishopNormals, bishopTexCoords, bishopNumVerts, bBishopWR);
+	drawPiece(M, bishopBLX, bishopBLY, bishopBLZ, false, bishopVerts, bishopNormals, bishopTexCoords, bishopNumVerts, bBishopBL);
+	drawPiece(M, bishopBRX, bishopBRY, bishopBRZ, false, bishopVerts, bishopNormals, bishopTexCoords, bishopNumVerts, bBishopBR);
 
 	// Queens
-	drawPiece(M, queenWX, queenWY, queenWZ, true, queenVerts, queenNormals, queenTexCoords, queenNumVerts);
-	drawPiece(M, queenBX, queenBY, queenBZ, false, queenVerts, queenNormals, queenTexCoords, queenNumVerts);
+	drawPiece(M, queenWX, queenWY, queenWZ, true, queenVerts, queenNormals, queenTexCoords, queenNumVerts, bQueenW);
+	drawPiece(M, queenBX, queenBY, queenBZ, false, queenVerts, queenNormals, queenTexCoords, queenNumVerts, bQueenB);
 
 	// Kings
-	drawPiece(M, kingWX, kingWY, kingWZ, true, kingVerts, kingNormals, kingTexCoords, kingNumVerts);
-	drawPiece(M, kingBX, kingBY, kingBZ, false, kingVerts, kingNormals, kingTexCoords, kingNumVerts);
+	drawPiece(M, kingWX, kingWY, kingWZ, true, kingVerts, kingNormals, kingTexCoords, kingNumVerts, bKingW);
+	drawPiece(M, kingBX, kingBY, kingBZ, false, kingVerts, kingNormals, kingTexCoords, kingNumVerts, bKingB);
 
 	// Pawns
 	// White
-	drawPiece(M, pawnW1X, pawnW1Y, pawnW1Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnW2X, pawnW2Y, pawnW2Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnW3X, pawnW3Y, pawnW3Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnW4X, pawnW4Y, pawnW4Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnW5X, pawnW5Y, pawnW5Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnW6X, pawnW6Y, pawnW6Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnW7X, pawnW7Y, pawnW7Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnW8X, pawnW8Y, pawnW8Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
+	drawPiece(M, pawnW1X, pawnW1Y, pawnW1Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnW1);
+	drawPiece(M, pawnW2X, pawnW2Y, pawnW2Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnW2);
+	drawPiece(M, pawnW3X, pawnW3Y, pawnW3Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnW3);
+	drawPiece(M, pawnW4X, pawnW4Y, pawnW4Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnW4);
+	drawPiece(M, pawnW5X, pawnW5Y, pawnW5Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnW5);
+	drawPiece(M, pawnW6X, pawnW6Y, pawnW6Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnW6);
+	drawPiece(M, pawnW7X, pawnW7Y, pawnW7Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnW7);
+	drawPiece(M, pawnW8X, pawnW8Y, pawnW8Z, true, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnW8);
 
 	// Black
-	drawPiece(M, pawnB1X, pawnB1Y, pawnB1Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnB2X, pawnB2Y, pawnB2Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnB3X, pawnB3Y, pawnB3Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnB4X, pawnB4Y, pawnB4Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnB5X, pawnB5Y, pawnB5Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnB6X, pawnB6Y, pawnB6Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnB7X, pawnB7Y, pawnB7Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
-	drawPiece(M, pawnB8X, pawnB8Y, pawnB8Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts);
+	drawPiece(M, pawnB1X, pawnB1Y, pawnB1Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnB1);
+	drawPiece(M, pawnB2X, pawnB2Y, pawnB2Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnB2);
+	drawPiece(M, pawnB3X, pawnB3Y, pawnB3Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnB3);
+	drawPiece(M, pawnB4X, pawnB4Y, pawnB4Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnB4);
+	drawPiece(M, pawnB5X, pawnB5Y, pawnB5Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnB5);
+	drawPiece(M, pawnB6X, pawnB6Y, pawnB6Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnB6);
+	drawPiece(M, pawnB7X, pawnB7Y, pawnB7Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnB7);
+	drawPiece(M, pawnB8X, pawnB8Y, pawnB8Z, false, pawnVerts, pawnNormals, pawnTexCoords, pawnNumVerts, bPawnB8);
 }

@@ -1,4 +1,4 @@
-#include <glm/glm.hpp>
+#include <GL/glew.h>
 #include <string>
 
 using namespace std;
