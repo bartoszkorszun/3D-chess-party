@@ -45,7 +45,7 @@ qb c7
 rwr e2
 kb d8
 rwl e1
-pw1 h6
+pb1 h6
 bwl e7
 bbl e7
 qw e7

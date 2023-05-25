@@ -174,6 +174,7 @@ string pieceToDestroy(string piece, string position) {
 		if (position == currentPositions[i][0]) {
 			result = currentPositions[i][1];
 			currentPositions[i][0] = "";
+			cout << "Updating position   | " << currentPositions[i][1] << " -> " << currentPositions[i][0] << endl;
 			break;
 		}
 	}

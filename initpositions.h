@@ -301,8 +301,8 @@ string currentPositions[32][2] = {
 	{"a8","rbr"},
 	{"b8","kbr"},
 	{"c8","bbr"},
-	{"d8","kb"},
-	{"e8","qb"},
+	{"d8","qb"},
+	{"e8","kb"},
 	{"f8","bbl"},
 	{"g8","kbl"},
 	{"h8","rbl"}
