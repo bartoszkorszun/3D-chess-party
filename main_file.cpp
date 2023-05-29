@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <shaderprogram.h>
-#include <constants.h>
 #include <lodepng.h>
+#include <constants.h>
 #include <drawpieces.h>
 #include <drawboard.h>
 
@@ -45,12 +45,16 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetWindowSizeCallback(window, windowResizeCallback);
 	glfwSetKeyCallback(window, keyCallback);
 
+	db->initTextures();
+	dp->initTextures();
 	sp = new ShaderProgram("v_simplest.glsl", NULL, "f_simplest.glsl");
 	dp->readFile("party.txt");
 }
 
 void freeOpenGLProgram(GLFWwindow* window) {
 
+	delete db;
+	delete dp;
 	delete sp;
 }
 
@@ -82,8 +86,11 @@ void drawScene(GLFWwindow* window) {
 	//Przeslij parametry programu cieniuj¹cego do karty graficznej
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
+	
 	glUniform4f(sp->u("lp1"), 3, 5, 0, 1);
 	glUniform4f(sp->u("lp2"), -3, 5, 0, 1);
+
+	glUniform1i(sp->u("textureMap"), 0);
 
 	glDisableVertexAttribArray(sp->a("vertex"));  //Wy³¹cz przesy³anie danych do atrybutu vertex
 	glDisableVertexAttribArray(sp->a("normals"));

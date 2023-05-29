@@ -1,5 +1,7 @@
 #version 330
 
+uniform sampler2D textureMap;
+
 out vec4 pixelColor; //Zmienna wyjsciowa fragment shadera. Zapisuje sie do niej ostateczny (prawie) kolor piksela
 
 in vec4 iColor;
@@ -22,8 +24,11 @@ void main(void) {
 
 	float nl1=clamp(dot(ml1,mn),0,1); //iloczyn skalarny, clamp - jak wartosc < 0 to zrob 0
 	float nl2=clamp(dot(ml2,mn),0,1);
+
     float rv1=pow(clamp(dot(r1,mv),0,1),50);
     float rv2=pow(clamp(dot(r2,mv),0,1),50);
 
-	pixelColor=(iColor*nl1+rv1)+(iColor*nl2+rv2);
+	vec4 texColor=texture(textureMap,iTexCoord0);
+
+	pixelColor=(texColor*nl1+rv1)+(texColor*nl2+rv2);
 }

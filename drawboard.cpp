@@ -8,8 +8,17 @@
 #include <shaderprogram.h>
 #include <drawboard.h>
 #include <field.h>
+#include <readtextures.h>
 
 DrawBoard* db;
+
+GLuint texWhite;
+GLuint texBlack;
+
+void DrawBoard::initTextures() {
+	texWhite = rt->readTexture("bmarble.png");
+	texBlack = rt->readTexture("wmarble.png");
+}
 
 void DrawBoard::drawBoard(glm::mat4 M) {
 
@@ -18,23 +27,6 @@ void DrawBoard::drawBoard(glm::mat4 M) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			M1 = glm::translate(M1, glm::vec3(1.0f, 0.0f, 0.0f));
-
-			if (i % 2 == 0) {
-				if (j % 2 == 0) {
-					glUniform4f(sp->u("color"), 0, 0, 0, 1);
-				}
-				else {
-					glUniform4f(sp->u("color"), 1, 1, 1, 1);
-				}
-			}
-			else {
-				if (j % 2 == 0) {
-					glUniform4f(sp->u("color"), 1, 1, 1, 1);
-				}
-				else {
-					glUniform4f(sp->u("color"), 0, 0, 0, 1);
-				}
-			}
 
 			glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M1));
 
@@ -46,6 +38,27 @@ void DrawBoard::drawBoard(glm::mat4 M) {
 
 			glEnableVertexAttribArray(sp->a("texCoord0"));
 			glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, fieldTexCoords);
+
+			if (i % 2 == 0) {
+				if (j % 2 == 0) {
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D, texBlack);
+				}
+				else {
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D, texWhite);
+				}
+			}
+			else {
+				if (j % 2 == 0) {
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D, texWhite);
+				}
+				else {
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D, texBlack);
+				}
+			}
 
 			glDrawArrays(GL_TRIANGLES, 0, fieldNumVerts); //Narysuj obiekt
 		}

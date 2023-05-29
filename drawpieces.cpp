@@ -14,12 +14,15 @@
 #include <sstream>
 #include <cmath>
 #include <thread>
-
 #include <drawpieces.h>
+#include <readtextures.h>
 
 using namespace std;
 
 DrawPieces* dp;
+
+GLuint texLight;
+GLuint texDark;
 
 string moves[107][2];
 
@@ -33,6 +36,11 @@ bool isRookOnTop = false;
 float fNextPosition[2];
 
 const float movementSpeed = 0.05f;
+
+void DrawPieces::initTextures() {
+	texLight = rt->readTexture("lwood.png");
+	texDark = rt->readTexture("dwood.png");
+}
 
 bool isEqual(float a, float b, float epsilon = 0.001f) {
 	return abs(a - b) < epsilon;
@@ -163,7 +171,6 @@ void assignPosition(string piece, string position) {
 	for (int i = 0; i < 32; i++) {
 		if (piece == currentPositions[i][1]) { currentPositions[i][0] = position; }
 	}
-	cout << ">>>assignPosition() | " << piece << " -> " << position << endl;
 }
 
 string pieceToDestroy(string piece, string position) {
@@ -174,19 +181,14 @@ string pieceToDestroy(string piece, string position) {
 		if (position == currentPositions[i][0]) {
 			result = currentPositions[i][1];
 			currentPositions[i][0] = "";
-			cout << "Updating position   | " << currentPositions[i][1] << " -> " << currentPositions[i][0] << endl;
 			break;
 		}
 	}
-
-	cout << ">>>pieceToDestroy() | " << result << endl;
 
 	return result;
 }
 
 void destroyPiece(string piece) {
-
-	cout << ">>>destroyPiece()   | " << piece << endl;
 
 	if (piece == "rwl") { bRookWL = false; }
 	if (piece == "rwr") { bRookWR = false; }
@@ -384,11 +386,9 @@ void drawPiece(glm::mat4 M, float x, float y, float z, bool isWhite,
 
 		if (isWhite) {
 			M1 = glm::rotate(M1, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			glUniform4f(sp->u("color"), 1, 1, 1, 1);
 		}
 		else {
 			M1 = glm::rotate(M1, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			glUniform4f(sp->u("color"), 0, 0, 0, 1);
 		}
 
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M1));
@@ -401,6 +401,15 @@ void drawPiece(glm::mat4 M, float x, float y, float z, bool isWhite,
 
 		glEnableVertexAttribArray(sp->a("texCoord0"));
 		glVertexAttribPointer(sp->a("texCoord0"), 2, GL_FLOAT, false, 0, texCoords);
+
+		if (isWhite) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texLight);
+		}
+		else {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texDark);
+		}
 
 		glDrawArrays(GL_TRIANGLES, 0, numVerts); //Narysuj obiekt
 	}
