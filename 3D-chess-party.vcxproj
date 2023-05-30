@@ -23,12 +23,15 @@
     <ClInclude Include="bishop.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="drawboard.h" />
+    <ClInclude Include="drawboardheader.h" />
     <ClInclude Include="drawpieces.h" />
+    <ClInclude Include="drawpiecesheader.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="initpositions.h" />
     <ClInclude Include="king.h" />
     <ClInclude Include="knight.h" />
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="mainheader.h" />
     <ClInclude Include="pawn.h" />
     <ClInclude Include="queen.h" />
     <ClInclude Include="readtextures.h" />
@@ -39,7 +42,7 @@
     <ClCompile Include="drawboard.cpp" />
     <ClCompile Include="drawpieces.cpp" />
     <ClCompile Include="lodepng.cpp" />
-    <ClCompile Include="main_file.cpp" />
+    <ClCompile Include="mainfile.cpp" />
     <ClCompile Include="readtextures.cpp" />
     <ClCompile Include="shaderprogram.cpp" />
   </ItemGroup>

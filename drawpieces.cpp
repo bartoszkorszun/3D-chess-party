@@ -1,42 +1,6 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <stdlib.h>
-#include <stdio.h>
-#include <shaderprogram.h>
-#include <allmodels.h>
-#include <initpositions.h>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <cmath>
-#include <thread>
-#include <drawpieces.h>
-#include <readtextures.h>
-
-using namespace std;
+#include <drawpiecesheader.h>
 
 DrawPieces* dp;
-
-GLuint texLight;
-GLuint texDark;
-GLuint texSurfacePieces;
-
-string moves[107][2];
-
-int nextMove = 0;
-
-bool castle = false;
-bool isOnTop = false;
-bool isKingOnTop = false;
-bool isRookOnTop = false;
-
-float fNextPosition[2];
-
-const float movementSpeed = 0.05f;
 
 void DrawPieces::initTextures() {
 	texLight = rt->readTexture("lwood.png");
@@ -327,8 +291,14 @@ void DrawPieces::movePieces() {
 	if (moves[nextMove][0] == "castle") { castle = true; nextMove++; }
 	
 	if (castle) {
-		// TODO ify
-		performCastle(moves[nextMove][1], moves[nextMove + 1][1], kingWX, kingWY, kingWZ, rookWRX, rookWRY, rookWRZ);
+		if (moves[nextMove][0] == "kw") {
+			if (moves[nextMove + 1][0] == "rwl") performCastle(moves[nextMove][1], moves[nextMove + 1][1], kingWX, kingWY, kingWZ, rookWLX, rookWLY, rookWLZ);
+			if (moves[nextMove + 1][0] == "rwr") performCastle(moves[nextMove][1], moves[nextMove + 1][1], kingWX, kingWY, kingWZ, rookWRX, rookWRY, rookWRZ);
+		}
+		if (moves[nextMove][0] == "kb") {
+			if (moves[nextMove + 1][0] == "rbl") performCastle(moves[nextMove][1], moves[nextMove + 1][1], kingBX, kingBY, kingBZ, rookBLX, rookBLY, rookBLZ);
+			if (moves[nextMove + 1][0] == "rbr") performCastle(moves[nextMove][1], moves[nextMove + 1][1], kingBX, kingBY, kingBZ, rookBRX, rookBRY, rookBRZ);
+		}
 	}
 	
 	if (!castle) {
