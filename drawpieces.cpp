@@ -278,8 +278,8 @@ void performCastle(string moveKingToPosition, string moveRookToPosition, float& 
 		if (isEqual(ky, 2.0f)) { isKingOnTop = true; }
 	}
 	if (isKingOnTop && !isEqual(kz, kzDestination)) {
-		if (kz <= kzDestination + epsilon) { kz += movementSpeed; }
-		else if (kz >= kzDestination - epsilon) { kz -= movementSpeed; }
+		if (kz <= kzDestination + epsilon) { kz += movementSpeed; kx += movementSpeed/2; }
+		else if (kz >= kzDestination - epsilon) { kz -= movementSpeed; kx += movementSpeed/2;	}
 	}
 	if (isKingOnTop && isEqual(kz, kzDestination) && !isEqual(kx, kxDestination)) {
 		if (kx <= kxDestination + epsilon) { kx += movementSpeed; }
@@ -298,8 +298,8 @@ void performCastle(string moveKingToPosition, string moveRookToPosition, float& 
 		if (isEqual(ry, 2.0f)) { isRookOnTop = true; }
 	}
 	if (isRookOnTop && !isEqual(rz, rzDestination)) {
-		if (rz <= rzDestination + epsilon) { rz += movementSpeed; }
-		else if (rz >= rzDestination - epsilon) { rz -= movementSpeed; }
+		if (rz <= rzDestination + epsilon) { rz += movementSpeed; rx -= movementSpeed/2; }
+		else if (rz >= rzDestination - epsilon) { rz -= movementSpeed; rx -= movementSpeed/2; }
 	}
 	if (isRookOnTop && isEqual(rz, rzDestination) && !isEqual(rx, rxDestination)) {
 		if (rx <= rxDestination + epsilon) { rx += movementSpeed; }
