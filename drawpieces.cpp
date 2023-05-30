@@ -23,6 +23,7 @@ DrawPieces* dp;
 
 GLuint texLight;
 GLuint texDark;
+GLuint texSurfacePieces;
 
 string moves[107][2];
 
@@ -40,6 +41,7 @@ const float movementSpeed = 0.05f;
 void DrawPieces::initTextures() {
 	texLight = rt->readTexture("lwood.png");
 	texDark = rt->readTexture("dwood.png");
+	texSurfacePieces = rt->readTexture("wood.png");
 }
 
 bool isEqual(float a, float b, float epsilon = 0.001f) {
@@ -408,8 +410,11 @@ void drawPiece(glm::mat4 M, float x, float y, float z, bool isWhite,
 		}
 		else {
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texDark);
+			glBindTexture(GL_TEXTURE_2D, texDark);	
 		}
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texSurfacePieces);
 
 		glDrawArrays(GL_TRIANGLES, 0, numVerts); //Narysuj obiekt
 	}

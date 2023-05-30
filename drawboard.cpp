@@ -14,10 +14,12 @@ DrawBoard* db;
 
 GLuint texWhite;
 GLuint texBlack;
+GLuint texSurfaceBoard;
 
 void DrawBoard::initTextures() {
 	texWhite = rt->readTexture("bmarble.png");
 	texBlack = rt->readTexture("wmarble.png");
+	texSurfaceBoard = rt->readTexture("marble.png");
 }
 
 void DrawBoard::drawBoard(glm::mat4 M) {
@@ -42,23 +44,26 @@ void DrawBoard::drawBoard(glm::mat4 M) {
 			if (i % 2 == 0) {
 				if (j % 2 == 0) {
 					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, texBlack);
+					glBindTexture(GL_TEXTURE_2D, texWhite);
 				}
 				else {
 					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, texWhite);
+					glBindTexture(GL_TEXTURE_2D, texBlack);
 				}
 			}
 			else {
 				if (j % 2 == 0) {
 					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, texWhite);
+					glBindTexture(GL_TEXTURE_2D, texBlack);
 				}
 				else {
 					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, texBlack);
+					glBindTexture(GL_TEXTURE_2D, texWhite);
 				}
 			}
+
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, texSurfaceBoard);
 
 			glDrawArrays(GL_TRIANGLES, 0, fieldNumVerts); //Narysuj obiekt
 		}

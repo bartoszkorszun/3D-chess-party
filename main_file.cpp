@@ -90,7 +90,8 @@ void drawScene(GLFWwindow* window) {
 	glUniform4f(sp->u("lp1"), 3, 5, 0, 1);
 	glUniform4f(sp->u("lp2"), -3, 5, 0, 1);
 
-	glUniform1i(sp->u("textureMap"), 0);
+	glUniform1i(sp->u("textureMap0"), 0);
+	glUniform1i(sp->u("textureMap1"), 1);
 
 	glDisableVertexAttribArray(sp->a("vertex"));  //Wy³¹cz przesy³anie danych do atrybutu vertex
 	glDisableVertexAttribArray(sp->a("normals"));
