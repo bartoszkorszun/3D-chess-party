@@ -7,11 +7,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 #include <shaderprogram.h>
 #include <lodepng.h>
 #include <constants.h>
 #include <drawpieces.h>
 #include <drawboard.h>
+
+bool play = false;
 
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
@@ -23,6 +26,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		if (key == GLFW_KEY_RIGHT) speed_x = PI / 2;
 		if (key == GLFW_KEY_UP) speed_y = PI / 2;
 		if (key == GLFW_KEY_DOWN) speed_y = -PI / 2;
+		if (key == GLFW_KEY_SPACE) play = !play;
 	}
 	if (action == GLFW_RELEASE) {
 		if (key == GLFW_KEY_LEFT) speed_x = 0;
@@ -41,7 +45,7 @@ void windowResizeCallback(GLFWwindow* window, int width, int height) {
 void initOpenGLProgram(GLFWwindow* window) {
 	
 	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.3, 0.3, 0.3, 1);
+	glClearColor(0, 0, 0, 1);
 	glfwSetWindowSizeCallback(window, windowResizeCallback);
 	glfwSetKeyCallback(window, keyCallback);
 
@@ -87,8 +91,8 @@ void drawScene(GLFWwindow* window) {
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	
-	glUniform4f(sp->u("lp1"), 3, 5, 0, 1);
-	glUniform4f(sp->u("lp2"), -3, 5, 0, 1);
+	glUniform4f(sp->u("lp1"), 2, 2, 0, 1);
+	glUniform4f(sp->u("lp2"), -2, 2, 0, 1);
 
 	glUniform1i(sp->u("textureMap0"), 0);
 	glUniform1i(sp->u("textureMap1"), 1);
@@ -131,9 +135,19 @@ int main(void) {
 	initOpenGLProgram(window);
 
 	while (!glfwWindowShouldClose(window)) {
+		
 		angle_x += speed_x * glfwGetTime();
-		angle_y += speed_y * glfwGetTime();
-		dp->movePieces();
+		if ((angle_y >= 0 && angle_y < 0.2) || angle_y <= 0 && angle_y > -1.5) {
+			angle_y += speed_y * glfwGetTime();
+		} 
+		else {
+			if (angle_y < 0) angle_y = -1.49;
+			if (angle_y > 0) angle_y = 0.19;
+		}
+		cout << "y: " << angle_y << endl;
+		
+		if(play) dp->movePieces();
+
 		glfwSetTime(0);
 		drawScene(window);
 		glfwPollEvents();
