@@ -13,61 +13,67 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\models">
+      <UniqueIdentifier>{0db48600-8edf-4632-9287-7395c7b16e97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki nagłówkowe\headers">
+      <UniqueIdentifier>{f4f5e827-4e8a-49fd-be79-412ba9ba1ac3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bishop.h">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="allmodels.h">
+      <Filter>Pliki nagłówkowe\models</Filter>
     </ClInclude>
-    <ClInclude Include="constants.h">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="bishop.h">
+      <Filter>Pliki nagłówkowe\models</Filter>
     </ClInclude>
     <ClInclude Include="field.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\models</Filter>
     </ClInclude>
     <ClInclude Include="king.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\models</Filter>
     </ClInclude>
     <ClInclude Include="knight.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\models</Filter>
     </ClInclude>
     <ClInclude Include="pawn.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\models</Filter>
     </ClInclude>
     <ClInclude Include="queen.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\models</Filter>
     </ClInclude>
     <ClInclude Include="rook.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\models</Filter>
     </ClInclude>
     <ClInclude Include="shaderprogram.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\headers</Filter>
     </ClInclude>
-    <ClInclude Include="allmodels.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="lodepng.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="drawpieces.h">
-      <Filter>Pliki nagłówkowe</Filter>
+    <ClInclude Include="constants.h">
+      <Filter>Pliki nagłówkowe\headers</Filter>
     </ClInclude>
     <ClInclude Include="drawboard.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="initpositions.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="readtextures.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="mainheader.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="drawpiecesheader.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\headers</Filter>
     </ClInclude>
     <ClInclude Include="drawboardheader.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki nagłówkowe\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpieces.h">
+      <Filter>Pliki nagłówkowe\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="drawpiecesheader.h">
+      <Filter>Pliki nagłówkowe\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="initpositions.h">
+      <Filter>Pliki nagłówkowe\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>Pliki nagłówkowe\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="mainheader.h">
+      <Filter>Pliki nagłówkowe\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="readtextures.h">
+      <Filter>Pliki nagłówkowe\headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
