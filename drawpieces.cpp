@@ -208,13 +208,22 @@ void movePiece(string piece, string moveToPosition, float &x, float &y, float &z
 		if (y < 2.0f + epsilon) { y += movementSpeed; }
 		if (isEqual(y, 2.0f)) { isOnTop = true; }
 	}
-	if (isOnTop && !isEqual(z, zDestination)) {
+	if (isOnTop && !isEqual(z, zDestination) && !isEqual(x, xDestination) 
+		&& piece != "kwl" && piece != "kwr" && piece != "kbl" && piece != "kbr") {
 		if (z <= zDestination + epsilon) { z += movementSpeed; }
 		else if (z >= zDestination - epsilon) { z -= movementSpeed; }
-	}
-	if (isOnTop && isEqual(z, zDestination) && !isEqual(x, xDestination)) {
 		if (x <= xDestination + epsilon) { x += movementSpeed; }
 		else if (x >= xDestination - epsilon) { x -= movementSpeed; }
+	}
+	else {
+		if (isOnTop && !isEqual(z, zDestination)) {
+			if (z <= zDestination + epsilon) { z += movementSpeed; }
+			else if (z >= zDestination - epsilon) { z -= movementSpeed; }
+		}
+		if (isOnTop && isEqual(z, zDestination) && !isEqual(x, xDestination)) {
+			if (x <= xDestination + epsilon) { x += movementSpeed; }
+			else if (x >= xDestination - epsilon) { x -= movementSpeed; }
+		}
 	}
 	if (isOnTop && isEqual(z, zDestination) && isEqual(x, xDestination)) {
 		if (!isEqual(y, 0.2f)) { y -= movementSpeed; }
