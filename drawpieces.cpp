@@ -2,6 +2,7 @@
 
 DrawPieces* dp;
 
+// Inicjalizacja tekstur
 void DrawPieces::initTextures() {
 	texLight = rt->readTexture("lwood.png");
 	texDark = rt->readTexture("dwood.png");
@@ -12,6 +13,7 @@ bool isEqual(float a, float b, float epsilon = 0.001f) {
 	return abs(a - b) < epsilon;
 }
 
+// Sprawdzenie, czy pion znajduje siê na danej pozycji
 bool isFieldOccupied(string position) {
 
 	for (int i = 0; i < 32; i++) {
@@ -21,6 +23,7 @@ bool isFieldOccupied(string position) {
 	return false;
 }
 
+// Odczytanie ruchów z pliku
 void DrawPieces::readFile(string filename) {
 
 	ifstream inputFile("party.txt"); // Replace "example.txt" with your file path
@@ -49,6 +52,7 @@ void DrawPieces::readFile(string filename) {
 	}
 }
 
+// Przypisanie pozycji, na któr¹ ma siê ruszyæ dany pion
 void nextPosition(string sNextPosition) {
 	
 	// A
@@ -132,6 +136,7 @@ void nextPosition(string sNextPosition) {
 	if (sNextPosition == "h8") { fNextPosition[0] = h8[0]; fNextPosition[1] = h8[1]; }
 }
 
+// Przypisanie nowej pozycji do piona
 void assignPosition(string piece, string position) {
 
 	for (int i = 0; i < 32; i++) {
@@ -139,6 +144,7 @@ void assignPosition(string piece, string position) {
 	}
 }
 
+// Przypisanie piona, który ma zostaæ zniszczony
 string pieceToDestroy(string piece, string position) {
 
 	string result;
@@ -154,6 +160,7 @@ string pieceToDestroy(string piece, string position) {
 	return result;
 }
 
+// Niszczenie pionka
 void destroyPiece(string piece) {
 
 	if (piece == "rwl") { bRookWL = false; }
@@ -196,6 +203,7 @@ void destroyPiece(string piece) {
 	if (piece == "pb8") { bPawnB8 = false; }
 }
 
+// Metoda odpowiedzialna za ruch pionków
 void movePiece(string piece, string moveToPosition, float &x, float &y, float &z) {
 
 	nextPosition(moveToPosition);
@@ -238,6 +246,7 @@ void movePiece(string piece, string moveToPosition, float &x, float &y, float &z
 	}
 }
 
+// Metoda odpowiedzialna za ruchy podczas roszady
 void performCastle(string moveKingToPosition, string moveRookToPosition, float& kx, float& ky, float& kz, float& rx, float& ry, float& rz) {
 
 	float epsilon = 0.001f;
@@ -295,6 +304,7 @@ void performCastle(string moveKingToPosition, string moveRookToPosition, float& 
 	}
 }
 
+// Metoda, która wywo³uje odpowiedni ruch w danym momencie
 void DrawPieces::movePieces() {
 
 	if (moves[nextMove][0] == "castle") { castle = true; nextMove++; }
@@ -358,6 +368,7 @@ void DrawPieces::movePieces() {
 	}
 }
 
+// Rysowanie pionków
 void drawPiece(glm::mat4 M, float x, float y, float z, bool isWhite,
 	float verts[], float normals[], float texCoords[], unsigned int numVerts, bool isInGame) {
 
@@ -399,6 +410,7 @@ void drawPiece(glm::mat4 M, float x, float y, float z, bool isWhite,
 	}
 }
 
+// Wywo³anie rysowania pionków
 void DrawPieces::drawPieces(glm::mat4 M) { 
 
 	// Rooks

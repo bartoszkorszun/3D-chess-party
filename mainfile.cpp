@@ -33,10 +33,10 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetWindowSizeCallback(window, windowResizeCallback);
 	glfwSetKeyCallback(window, keyCallback);
 
-	db->initTextures();
-	dp->initTextures();
+	db->initTextures(); // Zainicjowanie tekstur planszy
+	dp->initTextures(); // Zainicjowanie tekstur pionków
 	sp = new ShaderProgram("v_simplest.glsl", NULL, "f_simplest.glsl");
-	dp->readFile("party.txt");
+	dp->readFile("party.txt"); // odczytanie danych z pliku rozgrywki
 }
 
 void freeOpenGLProgram(GLFWwindow* window) {
@@ -66,8 +66,10 @@ void drawScene(GLFWwindow* window) {
 	M = glm::scale(M, glm::vec3(0.3f, 0.3f, 0.3f));
 	M = glm::translate(M, glm::vec3(-4.5f, -3.0f, -3.5f));
 
+	// Rysowanie planszy
 	db->drawBoard(M);
 
+	// Rysowanie pionków
 	dp->drawPieces(M);
 
 	sp->use();//Aktywacja programu cieniuj¹cego
@@ -75,6 +77,7 @@ void drawScene(GLFWwindow* window) {
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	
+	// ¯ród³a œwiat³a
 	glUniform4f(sp->u("lp1"), 2, 2, 0, 1);
 	glUniform4f(sp->u("lp2"), -2, 2, 0, 1);
 
@@ -120,6 +123,7 @@ int main(void) {
 
 	while (!glfwWindowShouldClose(window)) {
 		
+		// Blokada obrotu planszy
 		angle_x += speed_x * glfwGetTime();
 		if ((angle_y >= 0 && angle_y < 0.2) || angle_y <= 0 && angle_y > -1.5) {
 			angle_y += speed_y * glfwGetTime();
@@ -129,7 +133,7 @@ int main(void) {
 			if (angle_y > 0) angle_y = 0.19;
 		}
 		
-		if(play) dp->movePieces();
+		if(play) dp->movePieces(); // Wywo³anie metody z ruchami
 
 		glfwSetTime(0);
 		drawScene(window);

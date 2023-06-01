@@ -2,6 +2,7 @@
 
 ReadTextures* rt;
 
+// Odczytanie tekstur
 GLuint ReadTextures::readTexture(const char* filename) { //Deklaracja globalna
 	GLuint tex;
 	glActiveTexture(GL_TEXTURE0);

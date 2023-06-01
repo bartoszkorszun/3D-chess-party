@@ -2,12 +2,14 @@
 
 DrawBoard* db;
 
+// Inicjalizacja textur
 void DrawBoard::initTextures() {
 	texWhite = rt->readTexture("bmarble.png");
 	texBlack = rt->readTexture("wmarble.png");
 	texSurfaceBoard = rt->readTexture("marble.png");
 }
 
+// Rysowanie planszy
 void DrawBoard::drawBoard(glm::mat4 M) {
 
 	glm::mat4 M1 = M;
