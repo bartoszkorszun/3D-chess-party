@@ -12,4 +12,5 @@ Download it either using .zip or
 Open the .sln file using Visual Studio and hit f5.
 
 Arrows - rotating the board
+
 Space - Start/Pause the play
