@@ -9,7 +9,7 @@ It is a 3D party visualization using OpenGL.
 Download it either using .zip or 
 ```git clone https://github.com/bartoszkorszun/3D-chess-party.git```
 
-Open the .sln file using VisualStudio and hit f5.
+Open the .sln file using Visual Studio and hit f5.
 
 Arrows - rotating the board
 Space - Start/Pause the play
