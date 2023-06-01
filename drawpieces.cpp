@@ -13,7 +13,7 @@ bool isEqual(float a, float b, float epsilon = 0.001f) {
 	return abs(a - b) < epsilon;
 }
 
-// Sprawdzenie, czy pion znajduje siê na danej pozycji
+// Sprawdzenie, czy pion znajduje siÃª na danej pozycji
 bool isFieldOccupied(string position) {
 
 	for (int i = 0; i < 32; i++) {
@@ -23,10 +23,10 @@ bool isFieldOccupied(string position) {
 	return false;
 }
 
-// Odczytanie ruchów z pliku
+// Odczytanie ruchÃ³w z pliku
 void DrawPieces::readFile(string filename) {
 
-	ifstream inputFile("party.txt"); // Replace "example.txt" with your file path
+	ifstream inputFile("party.txt");
 
 	if (inputFile.is_open()) {
 		int i = 0;
@@ -52,7 +52,7 @@ void DrawPieces::readFile(string filename) {
 	}
 }
 
-// Przypisanie pozycji, na któr¹ ma siê ruszyæ dany pion
+// Przypisanie pozycji, na ktÃ³rÂ¹ ma siÃª ruszyÃ¦ dany pion
 void nextPosition(string sNextPosition) {
 	
 	// A
@@ -144,7 +144,7 @@ void assignPosition(string piece, string position) {
 	}
 }
 
-// Przypisanie piona, który ma zostaæ zniszczony
+// Przypisanie piona, ktÃ³ry ma zostaÃ¦ zniszczony
 string pieceToDestroy(string piece, string position) {
 
 	string result;
@@ -203,7 +203,7 @@ void destroyPiece(string piece) {
 	if (piece == "pb8") { bPawnB8 = false; }
 }
 
-// Metoda odpowiedzialna za ruch pionków
+// Metoda odpowiedzialna za ruch pionkÃ³w
 void movePiece(string piece, string moveToPosition, float &x, float &y, float &z) {
 
 	nextPosition(moveToPosition);
@@ -304,7 +304,7 @@ void performCastle(string moveKingToPosition, string moveRookToPosition, float& 
 	}
 }
 
-// Metoda, która wywo³uje odpowiedni ruch w danym momencie
+// Metoda, ktÃ³ra wywoÂ³uje odpowiedni ruch w danym momencie
 void DrawPieces::movePieces() {
 
 	if (moves[nextMove][0] == "castle") { castle = true; nextMove++; }
@@ -368,7 +368,7 @@ void DrawPieces::movePieces() {
 	}
 }
 
-// Rysowanie pionków
+// Rysowanie pionkÃ³w
 void drawPiece(glm::mat4 M, float x, float y, float z, bool isWhite,
 	float verts[], float normals[], float texCoords[], unsigned int numVerts, bool isInGame) {
 
@@ -385,8 +385,8 @@ void drawPiece(glm::mat4 M, float x, float y, float z, bool isWhite,
 
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M1));
 
-		glEnableVertexAttribArray(sp->a("vertex"));  //W³¹cz przesy³anie danych do atrybutu vertex
-		glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts); //Wska¿ tablicê z danymi dla atrybutu vertex
+		glEnableVertexAttribArray(sp->a("vertex"));  //WÂ³Â¹cz przesyÂ³anie danych do atrybutu vertex
+		glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts); //WskaÂ¿ tablicÃª z danymi dla atrybutu vertex
 
 		glEnableVertexAttribArray(sp->a("normals"));
 		glVertexAttribPointer(sp->a("normals"), 4, GL_FLOAT, false, 0, normals);
@@ -410,7 +410,7 @@ void drawPiece(glm::mat4 M, float x, float y, float z, bool isWhite,
 	}
 }
 
-// Wywo³anie rysowania pionków
+// WywoÂ³anie rysowania pionkÃ³w
 void DrawPieces::drawPieces(glm::mat4 M) { 
 
 	// Rooks
